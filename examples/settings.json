@@ -1,0 +1,9 @@
+{
+  "door_silence_minutes": 90,
+  "door_desire": 60,
+  "door_cooldown_hours": 4,
+  "pad_hours": 5.0,
+  "shower_minutes": 30,
+  "dry_hours": 12,
+  "timezone": "Asia/Shanghai"
+}

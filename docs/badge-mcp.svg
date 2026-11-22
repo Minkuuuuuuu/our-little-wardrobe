@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="146" height="26" viewBox="0 0 146 26">
+<rect width="146" height="26" rx="13" fill="#f6f3ea"/>
+<rect x="62" width="84" height="26" rx="13" fill="#7f9fb0"/>
+<rect x="62" width="13" height="26" fill="#7f9fb0"/>
+<text x="31.0" y="17" text-anchor="middle" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif" font-size="12" fill="#5c6655">给 agent</text>
+<text x="104.0" y="17" text-anchor="middle" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif" font-size="12" font-weight="600" fill="#ffffff">MCP / HTTP</text>
+</svg>

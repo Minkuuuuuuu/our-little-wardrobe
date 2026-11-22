@@ -1,0 +1,9 @@
+{
+  "items": [
+    {"kind": "bra", "color": "米白", "style": "软杯三角"},
+    {"kind": "bra", "color": "墨绿", "style": "蕾丝半杯", "note": "她最喜欢的一件"},
+    {"kind": "panties", "color": "米白", "style": "纯棉"},
+    {"kind": "panties", "color": "墨绿", "style": "蕾丝边", "code": "P02"}
+  ],
+  "wearing": {"top": "B01", "bottom": "P01"}
+}

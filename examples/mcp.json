@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "wardrobe": {
+      "command": "python3",
+      "args": ["-m", "wardrobe.mcp_server"],
+      "cwd": "/path/to/wardrobe-without-her-pieces",
+      "env": {"WARDROBE_DATA_DIR": "/path/to/wardrobe-data"}
+    }
+  }
+}
