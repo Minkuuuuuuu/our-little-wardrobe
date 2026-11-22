@@ -21,20 +21,36 @@
   function toast(text) { const t = $("#toast"); t.textContent = text; t.dataset.show = "true"; clearTimeout(toast.t); toast.t = setTimeout(() => { t.dataset.show = "false"; }, 2200); }
   function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
-  /* ── the ground: leaf shadows, drawn ── */
-  function leafShade() {
-    const r = rng(42);
-    let s = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">`;
-    for (let i = 0; i < 26; i++) {
-      const x = r() * 400, y = r() * 400, a = r() * 360, L = 40 + r() * 70;
-      s += `<path transform="translate(${x.toFixed(0)} ${y.toFixed(0)}) rotate(${a.toFixed(0)})" d="M0 0 Q${L / 2} ${-L * .3} ${L} 0 Q${L / 2} ${L * .3} 0 0Z" fill="rgba(16,32,18,.55)"/>`;
+  /* ── the ground: a wall of leaves, drawn. Three depths (far ones blurred and dark, near ones sharp and lit),
+     a little pink climbing through, warm light from the top left. All shapes, no photo. ── */
+  function foliage() {
+    const r = rng(7), W = 900, H = 1600;
+    const leaf = (x, y, deg, L, fill, op) => `<path transform="translate(${x.toFixed(0)} ${y.toFixed(0)}) rotate(${deg.toFixed(0)})" d="M0 0 C${L * .3} ${-L * .42} ${L * .75} ${-L * .4} ${L} 0 C${L * .75} ${L * .4} ${L * .3} ${L * .42} 0 0Z" fill="${fill}" fill-opacity="${op}"/><path transform="translate(${x.toFixed(0)} ${y.toFixed(0)}) rotate(${deg.toFixed(0)})" d="M${L * .08} 0 L${L * .92} 0" stroke="rgba(255,255,255,.18)" stroke-width="1.2"/>`;
+    const layer = (n, Lmin, Lmax, palette, op, blur) => {
+      let g = `<g filter="url(#b${blur})">`;
+      for (let i = 0; i < n; i++) g += leaf(r() * W, r() * H, r() * 360, Lmin + r() * (Lmax - Lmin), palette[Math.floor(r() * palette.length)], op);
+      return g + "</g>";
+    };
+    let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>`
+      + `<linearGradient id="sky" x1="0" y1="0" x2=".4" y2="1"><stop offset="0" stop-color="#8ea47a"/><stop offset=".5" stop-color="#5f7a56"/><stop offset="1" stop-color="#3b4f3a"/></linearGradient>`
+      + `<radialGradient id="sun" cx=".2" cy=".05" r=".8"><stop offset="0" stop-color="#fff6d6" stop-opacity=".55"/><stop offset=".45" stop-color="#fff6d6" stop-opacity=".1"/><stop offset="1" stop-color="#fff6d6" stop-opacity="0"/></radialGradient>`
+      + `<filter id="b3" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="9"/></filter><filter id="b2" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.5"/></filter><filter id="b1"><feGaussianBlur stdDeviation=".4"/></filter></defs>`
+      + `<rect width="${W}" height="${H}" fill="url(#sky)"/>`;
+    s += layer(70, 120, 260, ["#2f4632", "#3a5a3c", "#44633f", "#2b3f2d"], .85, 3);
+    s += layer(90, 70, 160, ["#4f7a4a", "#5c8a52", "#6a9a5c", "#43704a", "#7aa366"], .92, 2);
+    s += layer(60, 40, 110, ["#8bb074", "#9fc281", "#7ba764", "#b4cf93", "#6f9d5e"], .95, 1);
+    for (let i = 0; i < 26; i++) {   // a little pink, the way it climbs over a wall
+      const x = W * .55 + r() * W * .45, y = r() * H * .5;
+      s += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(4 + r() * 6).toFixed(1)}" fill="${r() < .5 ? "#e58fb0" : "#d46a93"}" fill-opacity=".85"/>`;
     }
-    return `url("data:image/svg+xml,${encodeURIComponent(s + "</svg>")}")`;
+    s += `<rect width="${W}" height="${H}" fill="url(#sun)"/></svg>`;
+    return `url("data:image/svg+xml,${encodeURIComponent(s)}")`;
   }
-  $("#shade").style.backgroundImage = leafShade();
+  $("#ground").style.backgroundImage = foliage();
+  $("#shade").remove();
 
   /* ── watercolour paper swatches instead of her photos: a few soft washes on cream, seeded per record ── */
-  const WASHES = [["#a9b8a0", "#5f7a5a"], ["#f1c3b0", "#c9613e"], ["#b5ccdb", "#5f859f"], ["#e8d6b8", "#9a7a4a"], ["#d7c6de", "#7a5c8e"], ["#cfd9c0", "#778c5f"]];
+  const WASHES = [["#a9b8a0", "#5f7a5a"], ["#f1c3b0", "#d98a6c"], ["#b5ccdb", "#7fa0b4"], ["#e8d6b8", "#b09670"], ["#d9cfd8", "#a08aa8"], ["#cfd9c0", "#8ea06f"]];
   const swatches = new Map();
   function swatch(seed, wide = false) {
     const key = `${seed}|${wide}`;
@@ -43,8 +59,8 @@
     const [soft, deep] = WASHES[seed % WASHES.length];
     let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><rect width="${W}" height="${H}" fill="#f1eee4"/>`;
     for (let i = 0; i < 4; i++) {
-      const cx = r() * W, cy = r() * H, rx = W * (.22 + r() * .3), ry = H * (.22 + r() * .3), rot = r() * 180;
-      s += `<ellipse cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" rx="${rx.toFixed(0)}" ry="${ry.toFixed(0)}" transform="rotate(${rot.toFixed(0)} ${cx.toFixed(0)} ${cy.toFixed(0)})" fill="${i % 2 ? deep : soft}" fill-opacity="${(.4 + r() * .3).toFixed(2)}"/>`;
+      const cx = r() * W, cy = r() * H, rx = W * (.16 + r() * .22), ry = H * (.16 + r() * .22), rot = r() * 180;
+      s += `<ellipse cx="${cx.toFixed(0)}" cy="${cy.toFixed(0)}" rx="${rx.toFixed(0)}" ry="${ry.toFixed(0)}" transform="rotate(${rot.toFixed(0)} ${cx.toFixed(0)} ${cy.toFixed(0)})" fill="${i % 2 ? deep : soft}" fill-opacity="${(.22 + r() * .22).toFixed(2)}"/>`;
     }
     for (let i = 0; i < 5; i++) {
       const x = r() * W, y = r() * H, L = 30 + r() * 70, a = r() * 360;
