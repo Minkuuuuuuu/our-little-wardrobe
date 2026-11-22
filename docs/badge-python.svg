@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="106" height="26" viewBox="0 0 106 26">
-<rect width="106" height="26" rx="13" fill="#f6f3ea"/>
-<rect x="56" width="50" height="26" rx="13" fill="#8a9a76"/>
-<rect x="56" width="13" height="26" fill="#8a9a76"/>
-<text x="28.0" y="17" text-anchor="middle" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif" font-size="12" fill="#5c6655">Python</text>
+<rect width="106" height="26" rx="13" fill="#fbf1f3"/>
+<rect x="56" width="50" height="26" rx="13" fill="#9fb58c"/>
+<rect x="56" width="13" height="26" fill="#9fb58c"/>
+<text x="28.0" y="17" text-anchor="middle" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif" font-size="12" fill="#6b5f66">Python</text>
 <text x="81.0" y="17" text-anchor="middle" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif" font-size="12" font-weight="600" fill="#ffffff">3.11+</text>
 </svg>

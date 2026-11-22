@@ -3,7 +3,7 @@
     "wardrobe": {
       "command": "python3",
       "args": ["-m", "wardrobe.mcp_server"],
-      "cwd": "/path/to/wardrobe-with-him",
+      "cwd": "/path/to/our-little-wardrobe",
       "env": {"WARDROBE_DATA_DIR": "/path/to/wardrobe-data"}
     }
   }
