@@ -173,7 +173,7 @@ def test_open_door_wakes_him_once_in_six_hours(monkeypatch):
 
 def test_period_stock_and_reminder_ladder(monkeypatch):
     db = stocked()
-    since = (datetime.now(life.ZONE) - timedelta(days=2)).strftime("%Y-%m-%d")
+    since = (datetime.strptime(life.day_of(time.time()), "%Y-%m-%d") - timedelta(days=2)).strftime("%Y-%m-%d")  # her 04:00 day, not midnight
     signal(period={"active": True, "since": since})
     assert care.period()["day"] == 3
     care.stock_set(db, "pad", 2)
