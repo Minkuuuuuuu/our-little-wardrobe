@@ -24,7 +24,7 @@ def _token() -> str:
 def cmd_serve(args) -> int:
     token = _token()
     print(f"wardrobe: data in {config.DATA_DIR}", file=sys.stderr)
-    print(f"wardrobe: page at http://{args.host}:{args.port}/app/records.html", file=sys.stderr)
+    print(f"wardrobe: page at http://{args.host}:{args.port}/app/wardrobe.html", file=sys.stderr)
     print(f"wardrobe: agent token in {config.TOKEN_PATH}", file=sys.stderr)
     api.serve(args.host, args.port, token, page_token=config.read_token(config.PAGE_TOKEN_PATH))
     return 0

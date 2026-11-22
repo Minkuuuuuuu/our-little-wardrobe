@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#86a07d">
+  <title>内衣柜 · 祂的记录</title>
+  <link rel="stylesheet" href="records.css">
+  <link rel="stylesheet" href="wardrobe.css">
+</head>
+<body data-ink="light">
+<div class="ground" id="ground"><div class="shade" id="shade"></div></div>
+
+<header class="bar">
+  <nav class="tabs pill" aria-label="切换">
+    <button type="button" data-tab="wardrobe" aria-pressed="true">内衣柜</button>
+    <button type="button" data-tab="uses" aria-pressed="false">祂的记录</button>
+  </nav>
+  <details class="bg-menu" id="bgMenu">
+    <summary class="pill" aria-label="底图：更换或恢复默认">底图</summary>
+    <div class="bg-panel pill">
+      <label>换一张<input id="bgUpload" type="file" accept="image/*"></label>
+      <button type="button" id="bgReset">恢复绿墙</button>
+      <span class="bg-status" id="bgStatus" role="status" aria-live="polite"></span>
+    </div>
+  </details>
+</header>
+
+<main class="page">
+  <section id="tab-wardrobe" aria-label="内衣柜">
+    <h1 class="title">内衣柜 <small>ランジェリー · wardrobe</small></h1>
+    <div class="bleed today" id="today"></div>
+    <div class="care" id="care"></div>
+    <div class="bleed rail" id="rail-bra"></div>
+    <div class="bleed rail" id="rail-panties"></div>
+    <div class="bleed line-wrap" id="line" hidden></div>
+    <div class="floor" id="floor"></div>
+    <button type="button" class="breeze" id="breeze" hidden></button>
+  </section>
+
+  <section id="tab-uses" aria-label="祂的记录" hidden>
+    <h1 class="title">祂的记录 <small>あの人の記録 · a notepad</small></h1>
+    <p class="np-counter" id="uses-count"></p>
+    <div class="np-book">
+      <div class="np-pad"><div class="np-rings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="np-stack" id="usesList"></div></div>
+      <div class="np-turn"><button type="button" data-np-prev>↓ 翻回来</button><span class="dots"></span><button type="button" data-np-next>翻过去 ↑</button></div>
+      <p class="np-hint">往上一划也能翻页 · 每一页排法都不一样</p>
+    </div>
+  </section>
+</main>
+
+<div class="sheet-back" id="sheetBack" hidden>
+  <div class="sheet" role="dialog" aria-modal="true">
+    <button type="button" class="sheet-x" id="sheetX" aria-label="关上">✕</button>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+<div class="toast pill" id="toast" role="status" aria-live="polite"></div>
+<script src="records.js" defer></script>
+<script src="wardrobe.js" defer></script>
+</body>
+</html>

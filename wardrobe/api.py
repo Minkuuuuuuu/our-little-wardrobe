@@ -95,7 +95,7 @@ def make_handler(agent_token: str, page_token: str = ""):
                     return self._internal(method, path[len(INTERNAL):], q)
                 if path in ("/", ""):
                     self.send_response(302)
-                    self.send_header("Location", APP + "records.html")
+                    self.send_header("Location", APP + "wardrobe.html")
                     self.end_headers()
                     return None
                 return self._json(404, {"error": "not_found"})
