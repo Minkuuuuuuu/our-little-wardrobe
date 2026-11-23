@@ -180,7 +180,7 @@
     if (p && p.active) {
       const last = wardrobe.last_change ? `上次换 ${clock(wardrobe.last_change.at)}` : "今天还没记过换";
       rows.push(`<p class="care-row period"><b>经期第 ${p.day} 天</b>　${count("pad")}　${count("night_pants")}　<span class="hand">${last}</span></p>`);
-      rows.push(`<p class="care-row"><button type="button" class="tiny her" data-care="changed" data-kind="pad">换了卫生巾</button><button type="button" class="tiny her" data-care="night-pants">换上安睡裤</button><span class="hand">　祂白天每 5 小时提醒你一次，点一下它就从头数</span></p>`);
+      rows.push(`<p class="care-row"><button type="button" class="tiny her" data-care="changed" data-kind="pad">换了卫生巾</button><button type="button" class="tiny her" data-care="night-pants">换上安睡裤</button><span class="hand">　祂白天每 ${(wardrobe.rules || {}).pad_hours || 5} 小时提醒你一次，点一下它就从头数</span></p>`);
     } else if (st.pad || st.night_pants) {
       rows.push(`<p class="care-row faint">${count("pad")}　${count("night_pants")}</p>`);
     }
@@ -328,17 +328,40 @@
       else if (what === "night-pants") { return wear("bottom", "night_pants"); }
       else if (what === "stock") {
         const s = (wardrobe.stock || {})[el.dataset.kind];
-        const v = prompt(`${s.label}还有多少${s.unit}？`, String(s.count));
+        const v = await askNumber({ meta: s.label, title: `还有多少${s.unit}？`, value: s.count, unit: s.unit, min: 0, max: 999 });
         if (v === null) return;
         await api("/wardrobe/stock", { method: "PUT", body: { kind: el.dataset.kind, count: Number(v) } });
+        toast("记下了");
       }
       await loadWardrobe();
     } catch (err) { toast(errorText(err)); }
   }
 
   /* ── 面板 ── */
-  function openSheet(html) { $("#sheetBody").innerHTML = html; $("#sheetBack").hidden = false; }
-  function closeSheet() { $("#sheetBack").hidden = true; }
+  let sheetClosed = null;   // told once when the open sheet goes away, however it goes away
+  function openSheet(html) { sheetClosed = null; $("#sheetBody").innerHTML = html; $("#sheetBack").hidden = false; }
+  function closeSheet() { $("#sheetBack").hidden = true; const f = sheetClosed; sheetClosed = null; if (f) f(); }
+  /* 问一个数。不用浏览器自带的 prompt()：套在 App 壳子（WKWebView 之类）里它常常弹不出来，数量就一直改不了。 */
+  function askNumber({ meta = "", title, value = "", unit = "", min = 0, max = 999, stepBy = 1, decimals = false, hint = "", ok = "记下" }) {
+    return new Promise((resolve) => {
+      openSheet(`${meta ? `<p class="sheet-meta">${esc(meta)}</p>` : ""}<h3 class="sheet-title">${esc(title)}</h3>
+        <div class="stepper"><button type="button" class="act" data-step="-1" aria-label="少一点">−</button><input id="numIn" type="number" inputmode="${decimals ? "decimal" : "numeric"}" min="${min}" max="${max}" step="${decimals ? "any" : 1}" value="${esc(String(value))}"><span class="unit">${esc(unit)}</span><button type="button" class="act" data-step="1" aria-label="多一点">＋</button></div>
+        ${hint ? `<p class="hand num-hint">${esc(hint)}</p>` : ""}
+        <div class="acts"><button type="button" class="act main" id="numOk">${esc(ok)}</button><button type="button" class="act" id="numCancel">算了</button></div>`);
+      const input = $("#numIn");
+      let done = false;
+      const finish = (v) => { if (done) return; done = true; closeSheet(); resolve(v); };
+      sheetClosed = () => finish(null);
+      $("#sheetBody").querySelectorAll("[data-step]").forEach((b) => b.addEventListener("click", () => {
+        const cur = Number(input.value) || 0;
+        input.value = String(Math.min(max, Math.max(min, cur + Number(b.dataset.step) * stepBy)));
+      }));
+      $("#numOk").addEventListener("click", () => finish(input.value.trim()));
+      $("#numCancel").addEventListener("click", () => finish(null));
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); finish(input.value.trim()); } });
+      input.focus(); input.select();
+    });
+  }
   $("#sheetX").addEventListener("click", closeSheet);
   $("#sheetBack").addEventListener("click", (e) => { if (e.target === e.currentTarget) closeSheet(); });
 

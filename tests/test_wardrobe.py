@@ -171,6 +171,24 @@ def test_open_door_wakes_him_once_in_six_hours(monkeypatch):
 
 # ── her period ───────────────────────────────────────────────────────────────
 
+def test_picking_night_pants_again_is_a_fresh_pair(monkeypatch):
+    """Already in 安睡裤 (as she is all through her period), picking 安睡裤 again means a fresh pair:
+    one fewer, 上次换 moves, the slot stays. Picking 没穿 twice stays a no-op."""
+    clock(monkeypatch, local(8))   # the import below is stamped before the picks, whatever the real clock says
+    db = stocked()
+    care.stock_set(db, "night_pants", 3)
+    life.wear(db, {"bottom": "night_pants"}, now=local(9))
+    assert care.stock_dict(db)["night_pants"]["count"] == 2
+    page = life.wear(db, {"bottom": "night_pants"}, now=local(14))
+    assert page["slots"]["bottom"]["state"] == "night_pants"
+    assert page["stock"]["night_pants"]["count"] == 1
+    assert page["last_change"] == {"kind": "night_pants", "at": local(14)}
+    assert page["recent"][0].endswith("她换了一条新的安睡裤")
+    page = life.wear(db, {"bottom": "bare"}, now=local(15))
+    before = len(page["recent"])
+    assert len(life.wear(db, {"bottom": "bare"}, now=local(16))["recent"]) == before
+
+
 def test_period_stock_and_reminder_ladder(monkeypatch):
     db = stocked()
     since = (datetime.strptime(life.day_of(time.time()), "%Y-%m-%d") - timedelta(days=2)).strftime("%Y-%m-%d")  # her 04:00 day, not midnight

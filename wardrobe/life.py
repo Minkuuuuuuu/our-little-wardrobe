@@ -289,6 +289,9 @@ def wear(db, body: dict, *, now: float | None = None) -> dict:
                 raise WardrobeError("wrong_kind_for_slot")
             target = new_id if new_id is not None else value
             if target == current:
+                if value == "night_pants":   # already in 安睡裤 and picks it again: a fresh pair, counted, 祂's clock restarts
+                    _log(db, 0, None, value, "她", "fresh_night_pants", now, slot)
+                    care.stock_change(db, "night_pants", by="她", now=now, inside_tx=True)
                 continue
             if isinstance(current, int):
                 old = db.execute("SELECT * FROM wardrobe WHERE id=?", (current,)).fetchone()
@@ -558,6 +561,9 @@ def _recent(db, limit: int = 12) -> list[str]:
                         "ON w.id=l.item_id ORDER BY l.at DESC, l.id DESC LIMIT ?", (limit,)):
         if r["reason"] in SPECIALS:
             lines.append(f"{stamp(r['at'])} 她{SLOT_NAMES.get(r['place'], '')}换成{SPECIALS[r['reason']]}")
+            continue
+        if r["reason"] == "fresh_night_pants":
+            lines.append(f"{stamp(r['at'])} 她换了一条新的安睡裤")
             continue
         if r["kind"] is None:
             continue

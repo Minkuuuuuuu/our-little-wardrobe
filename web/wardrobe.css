@@ -149,6 +149,13 @@ svg.branch { position: absolute; left: 0; top: 0; overflow: visible; pointer-eve
 .picker button .word { display: grid; place-items: center; width: 70px; height: 58px; font-size: 14px; letter-spacing: .14em; color: var(--ink); }
 .opt { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; font-size: 13px; color: var(--dim); }
 .opt input { width: 16px; height: 16px; accent-color: var(--her); }
+/* 问一个数的小单：− 数字 ＋ */
+.stepper { display: flex; align-items: center; gap: 10px; margin: 14px 0 4px; }
+.stepper .act { width: 42px; padding: 0; font-size: 20px; line-height: 1; }
+.stepper input { width: 96px; min-height: 40px; padding: 0 4px; border: 0; border-bottom: 1px solid var(--line-soft); background: none; font-size: 24px; text-align: center; color: var(--ink); outline: none; -moz-appearance: textfield; appearance: textfield; }
+.stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper .unit { font-size: 13px; color: var(--dim); }
+.num-hint { margin: 2px 0 0; font-size: 12.5px; }
 .tiny.danger { color: var(--her); border-color: transparent; opacity: .8; }
 .empty { color: var(--dim); font-size: 14px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
